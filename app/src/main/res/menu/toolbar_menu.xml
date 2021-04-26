@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.dd.tyt.MainActivity"
+    android:id="@+id/toolbar_menu">
+
+    <item
+        android:id="@+id/peopleButton"
+        android:icon="@drawable/people"
+        android:title="관리자 버튼"
+        app:showAsAction="ifRoom" />
+
+
+</menu>
