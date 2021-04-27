@@ -10,6 +10,17 @@
 
 
         <ImageView
+            android:id="@+id/charger"
+            android:layout_width="36dp"
+            android:layout_height="67dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/phone"
+            app:layout_constraintEnd_toEndOf="@+id/phone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/phone"
+            app:srcCompat="@drawable/charger" />
+
+        <ImageView
             android:id="@+id/phone"
             android:layout_width="80dp"
             android:layout_height="150dp"
@@ -37,6 +48,7 @@
             app:layout_constraintStart_toStartOf="@+id/circle"
             app:layout_constraintTop_toTopOf="@+id/circle"
             app:srcCompat="@drawable/number" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

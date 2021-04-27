@@ -72,6 +72,7 @@ public class CableAdapter extends RecyclerView.Adapter<CableAdapter.ViewHolder> 
         ImageView phone;
         ImageView circle;
         ImageView number;
+        ImageView charger;
 
         OnItemClickListener listener;
 
@@ -81,6 +82,7 @@ public class CableAdapter extends RecyclerView.Adapter<CableAdapter.ViewHolder> 
             phone = (ImageView) itemView.findViewById(R.id.phone);
             circle = (ImageView) itemView.findViewById(R.id.circle);
             number = (ImageView) itemView.findViewById(R.id.number);
+            charger = (ImageView) itemView.findViewById(R.id.charger);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,9 +98,19 @@ public class CableAdapter extends RecyclerView.Adapter<CableAdapter.ViewHolder> 
         }
 
         public void setItem(CableItem item) {
-            phone.setImageResource(item.getPhone());
-            circle.setImageResource(item.getCircle());
+
             number.setImageResource(item.getNumber());
+
+            if (item.getCharger() == 1) {
+                phone.setImageResource(R.drawable.phone_blue);
+                circle.setImageResource(R.drawable.circle_blue);
+                charger.setVisibility(View.VISIBLE);
+            } else {
+                phone.setImageResource(R.drawable.phone_gray);
+                circle.setImageResource(R.drawable.circle_gray);
+                charger.setVisibility(View.VISIBLE);
+            }
+
         }
 
         public void setOnItemClickListener(OnItemClickListener listener) {

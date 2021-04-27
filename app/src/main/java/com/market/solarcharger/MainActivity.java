@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         toolbarInit();
-
         recyclerViewInit();
 
 
@@ -53,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new CableAdapter(getApplicationContext());
 
-        adapter.addItem(new CableItem(R.drawable.phone_blue, R.drawable.circle_blue, R.drawable.blue1));
-        adapter.addItem(new CableItem(R.drawable.phone_gray, R.drawable.circle_gray, R.drawable.gray2));
-        adapter.addItem(new CableItem(R.drawable.phone_gray, R.drawable.circle_gray, R.drawable.gray3));
+        adapter.addItem(new CableItem(1,R.drawable.blue1));
+        adapter.addItem(new CableItem(0,R.drawable.gray2));
+        adapter.addItem(new CableItem(0,R.drawable.gray3));
 
         recyclerView.setAdapter(adapter);
 
