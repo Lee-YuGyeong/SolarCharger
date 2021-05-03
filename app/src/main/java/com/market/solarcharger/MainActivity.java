@@ -1,5 +1,6 @@
 package com.market.solarcharger;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,11 +16,16 @@ import android.graphics.Bitmap;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -27,7 +33,15 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+
 import android.graphics.Color;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,10 +52,20 @@ public class MainActivity extends AppCompatActivity {
 
     private LineChart chart;
 
+    TextView text_weather;
+    String msg;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        msg = intent.getStringExtra("weather");
+
+        text_weather = findViewById(R.id.text_weather);
+        text_weather.setText(msg);
 
         toolbarInit();
         recyclerViewInit();
@@ -74,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     public void toolbarInit() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -88,9 +113,9 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new CableAdapter(getApplicationContext());
 
-        adapter.addItem(new CableItem(1,R.drawable.blue1));
-        adapter.addItem(new CableItem(0,R.drawable.gray2));
-        adapter.addItem(new CableItem(0,R.drawable.gray3));
+        adapter.addItem(new CableItem(1, R.drawable.blue1));
+        adapter.addItem(new CableItem(0, R.drawable.gray2));
+        adapter.addItem(new CableItem(0, R.drawable.gray3));
 
         recyclerView.setAdapter(adapter);
 
