@@ -17,8 +17,6 @@ import java.io.IOException;
 
 public class Splash extends AppCompatActivity {
 
-
-    TextView text_weather;
     String url = "https://weather.naver.com/today/09215109";
     String msg;
     final Bundle bundle = new Bundle();
