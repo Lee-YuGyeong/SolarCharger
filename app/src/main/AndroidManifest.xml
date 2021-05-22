@@ -12,8 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SolarCharger"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".Splash">
+        <activity android:name=".Splash"></activity>
+        <activity android:name=".SubActivity"></activity>
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

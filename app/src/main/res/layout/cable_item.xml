@@ -10,21 +10,11 @@
 
 
         <ImageView
-            android:id="@+id/charger"
-            android:layout_width="36dp"
-            android:layout_height="67dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/phone"
-            app:layout_constraintEnd_toEndOf="@+id/phone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/phone"
-            app:srcCompat="@drawable/charger" />
-
-        <ImageView
             android:id="@+id/phone"
             android:layout_width="80dp"
             android:layout_height="150dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/phone_gray" />
@@ -40,14 +30,29 @@
             app:srcCompat="@drawable/circle_gray" />
 
         <ImageView
+            android:id="@+id/charger"
+            android:layout_width="36dp"
+            android:layout_height="67dp"
+            app:layout_constraintBottom_toBottomOf="@+id/phone"
+            app:layout_constraintEnd_toEndOf="@+id/phone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/charger"
+            android:visibility="invisible"/>
+
+
+        <TextView
             android:id="@+id/number"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/circle"
             app:layout_constraintEnd_toEndOf="@+id/circle"
             app:layout_constraintStart_toStartOf="@+id/circle"
             app:layout_constraintTop_toTopOf="@+id/circle"
-            app:srcCompat="@drawable/number" />
+            app:srcCompat="@drawable/number"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.market.solarcharger.API.APIClient;
+import com.market.solarcharger.API.Api;
 
 import android.graphics.Color;
 
@@ -45,18 +48,35 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     CableAdapter adapter;
+    MCableAdapter Madapter;
     Toolbar toolbar;
 
     private LineChart chart;
 
     TextView text_weather;
     String msg;
+    int image;
     CardView chartLayout;
+    CardView powerLayout;
+    int m = 0;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getPortInfo();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,21 +85,34 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         msg = intent.getStringExtra("weather");
-
+        image = intent.getIntExtra("image", 0);
         text_weather = findViewById(R.id.text_weather);
         text_weather.setText(msg);
 
-        ImageView imageView = findViewById(R.id.imageView2);
-        if (msg == "구름많음") {
-            imageView.setImageResource(R.drawable.clouds);
-        }
-        imageView.setImageResource(R.drawable.clouds);
-        toolbarInit();
+        ImageButton button = findViewById(R.id.button1);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SubActivity.class);
+                intent.putExtra("m", m);
+                startActivity(intent);
+            }
+        });
+
         recyclerViewInit();
 
+        ImageView imageView = findViewById(R.id.imageView2);
+        imageView.setImageResource(image);
+
+        toolbarInit();
+
+
         chartLayout = findViewById(R.id.chartLayout);
+        powerLayout = findViewById(R.id.powerLayout);
 
         chart = findViewById(R.id.linechart);
+
+        getGraphInfo();
+
 
         ArrayList<Entry> values = new ArrayList<>();
 
@@ -88,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
             float val = (float) (Math.random() * 10);
             values.add(new Entry(i, val));
         }
+
+        getPortInfo();
 
         LineDataSet set1;
         set1 = new LineDataSet(values, "DataSet 1");
@@ -107,6 +142,122 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void getPortInfo() {
+
+
+        Api Api = APIClient.getClient().create(Api.class);
+        Call<PortResponseInfo> call = Api.getPort(1);
+
+        call.enqueue(new Callback<PortResponseInfo>() {
+            @Override
+            public void onResponse(Call<PortResponseInfo> call, Response<PortResponseInfo> response) {
+                if (response.isSuccessful()) {
+
+                    PortResponseInfo portResponseInfo = response.body();
+                    List<portDetailInfo> portDetailInfoList = new ArrayList<portDetailInfo>(portResponseInfo.getPortDetailInfoList());
+
+                    adapter.items.clear();
+                    Madapter.items.clear();
+                    adapter.notifyDataSetChanged();
+                    Madapter.notifyDataSetChanged();
+
+                    for (int i = 0; i < portDetailInfoList.size(); i++) {
+                        adapter.addItem(new CableItem(portDetailInfoList.get(i).getPort_num(), portDetailInfoList.get(i).getReport(), portDetailInfoList.get(i).getBroken(), portDetailInfoList.get(i).getStatusInfo()));
+                        Madapter.addItem(new CableItem(portDetailInfoList.get(i).getPort_num(), portDetailInfoList.get(i).getReport(), portDetailInfoList.get(i).getBroken(), portDetailInfoList.get(i).getStatusInfo()));
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    Madapter.notifyDataSetChanged();
+
+                } else { //response 실패
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<PortResponseInfo> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    } // retrofit 데이터 받아오기
+
+    private void getGraphInfo() {
+
+
+        Api Api = APIClient.getClient().create(Api.class);
+        Call<GraphInfo> call = Api.GraphReport(1);
+
+        TextView power = findViewById(R.id.power);
+
+
+        call.enqueue(new Callback<GraphInfo>() {
+            @Override
+            public void onResponse(Call<GraphInfo> call, Response<GraphInfo> response) {
+                if (response.isSuccessful()) {
+                    GraphInfo graphInfo = response.body();
+                    List<GraphDetailInfo> graphDetailInfoList = new ArrayList<GraphDetailInfo>(graphInfo.getGraphDetailInfoList());
+                    power.setText("   ▶ "+graphDetailInfoList.get(0).getPowerpower());
+
+
+                } else { //response 실패
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<GraphInfo> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    } // retrofit 데이터 받아오기
+
+
+    private void getNotPortInfo(int num) {
+
+        AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity.this);
+        dlg.setTitle("정상 작동");
+        dlg.setMessage("정상 작동 상태로 복구하시겠습니까?");
+        dlg.setPositiveButton("확인",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Api Api = APIClient.getClient().create(Api.class);
+                        Call<ReportResponseInfo> call = Api.updateNotReport(num);
+
+                        call.enqueue(new Callback<ReportResponseInfo>() {
+                            @Override
+                            public void onResponse(Call<ReportResponseInfo> call, Response<ReportResponseInfo> response) {
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(getApplicationContext(), "복구되었습니다.", Toast.LENGTH_LONG).show();
+                                    getPortInfo();
+                                } else { //response 실패
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<ReportResponseInfo> call, Throwable t) {
+                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+                    }
+                });
+        dlg.setNegativeButton("취소",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        dlg.show();
+
+
+    } // retrofit 데이터 받아오기
+
 
     public void toolbarInit() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -121,10 +272,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         adapter = new CableAdapter(getApplicationContext());
-
-        adapter.addItem(new CableItem(1, R.drawable.blue1));
-        adapter.addItem(new CableItem(0, R.drawable.gray2));
-        adapter.addItem(new CableItem(0, R.drawable.gray3));
+        Madapter = new MCableAdapter(getApplicationContext());
 
         recyclerView.setAdapter(adapter);
 
@@ -136,6 +284,14 @@ public class MainActivity extends AppCompatActivity {
             public void OnItemClick(CableAdapter.ViewHolder holder, View view, int position) {
                 CableItem item = adapter.getItem(position);
                 Toast.makeText(getApplicationContext(), "선택됨 : " + position, Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+        Madapter.setOnItemClickListener(new MCableAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(MCableAdapter.ViewHolder holder, View view, int position) {
+                getNotPortInfo(position + 1);
             }
         });
     }
@@ -157,32 +313,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void checkManager() {
-        final EditText txtEdit = new EditText(MainActivity.this);
-        txtEdit.setRawInputType(InputType.TYPE_CLASS_NUMBER);
-        AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity.this);
-        dlg.setTitle("관리자 모드");
-        dlg.setMessage("관리자 모드를 실행하려면 패스워드를 입력하세요.");
-        dlg.setView(txtEdit);
-        dlg.setPositiveButton("확인",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        String str = txtEdit.getText().toString();
-                        if (Integer.parseInt(str) == 1234) {
-                            Toast.makeText(getApplicationContext(), "관리자 모드로 변경되었습니다.", Toast.LENGTH_LONG).show();
-                            chartLayout.setVisibility(View.VISIBLE);
-                        } else {
-                            Toast.makeText(getApplicationContext(), "비밀번호를 다시 입력해주세요.", Toast.LENGTH_LONG).show();
+
+        if (m == 1) {
+            chartLayout.setVisibility(View.INVISIBLE);
+            recyclerView.setAdapter(adapter);
+            m = 0;
+            getPortInfo();
+        } else {
+            final EditText txtEdit = new EditText(MainActivity.this);
+            txtEdit.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+            AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity.this);
+            dlg.setTitle("관리자 모드");
+            dlg.setMessage("관리자 모드를 실행하려면 패스워드를 입력하세요.");
+            dlg.setView(txtEdit);
+            dlg.setPositiveButton("확인",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            String str = txtEdit.getText().toString();
+                            if (Integer.parseInt(str) == 1234) {
+                                Toast.makeText(getApplicationContext(), "관리자 모드로 변경되었습니다.", Toast.LENGTH_LONG).show();
+                                chartLayout.setVisibility(View.VISIBLE);
+                                powerLayout.setVisibility(View.VISIBLE);
+                                recyclerView.setAdapter(Madapter);
+                                m = 1;
+                                getPortInfo();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "비밀번호를 다시 입력해주세요.", Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }
-                });
-        dlg.setNegativeButton("취소",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                    });
+            dlg.setNegativeButton("취소",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                });
-        dlg.show();
-
+                        }
+                    });
+            dlg.show();
+        }
     }
 
 }

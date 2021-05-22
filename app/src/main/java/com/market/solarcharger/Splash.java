@@ -21,7 +21,7 @@ public class Splash extends AppCompatActivity {
     String msg;
     final Bundle bundle = new Bundle();
     Elements e;
-
+    int image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +35,29 @@ public class Splash extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+
+
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("weather", msg);
+
+                if (msg.matches("흐림") || msg.matches("구름많음") ) {
+                    image = getResources().getIdentifier("clouds" , "drawable", getPackageName());
+                }else if(msg.matches("맑음")){
+                    image = getResources().getIdentifier("sun_image" , "drawable", getPackageName());
+
+                }else if(msg.matches("비")){
+                    image = getResources().getIdentifier("rain" , "drawable", getPackageName());
+                }
+                intent.putExtra("image", image);
                 startActivity(intent);
                 finish();
             }
-        }, 300);
+        }, 700);
 
     }
 
     class BackgroundThread extends Thread {
+
         @Override
         public void run() {
             Document doc = null;

@@ -2,28 +2,47 @@ package com.market.solarcharger;
 
 public class CableItem {
 
-    int charger;
-    int number;
+    int Port_num;
+    int Report;
+    int Broken;
+    int StatusInfo;
 
-
-    public CableItem(int charger, int number) {
-        this.charger = charger;
-        this.number = number;
+    public CableItem(int port_num, int report, int broken, int statusInfo) {
+        Port_num = port_num;
+        Report = report;
+        Broken = broken;
+        StatusInfo = statusInfo;
     }
 
-    public int getCharger() {
-        return charger;
+    public int getPort_num() {
+        return Port_num;
     }
 
-    public void setCharger(int charger) {
-        this.charger = charger;
+    public void setPort_num(int port_num) {
+        Port_num = port_num;
     }
 
-    public int getNumber() {
-        return number;
+    public int getReport() {
+        return Report;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
+    public void setReport(int report) {
+        Report = report;
+    }
+
+    public int getBroken() {
+        return Broken;
+    }
+
+    public void setBroken(int broken) {
+        Broken = broken;
+    }
+
+    public int getStatusInfo() {
+        return StatusInfo;
+    }
+
+    public void setStatusInfo(int statusInfo) {
+        StatusInfo = statusInfo;
     }
 }

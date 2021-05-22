@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class CableAdapter extends RecyclerView.Adapter<CableAdapter.ViewHolder> {
+public class MCableAdapter extends RecyclerView.Adapter<MCableAdapter.ViewHolder> {
 
     Context context;
 
@@ -24,7 +24,7 @@ public class CableAdapter extends RecyclerView.Adapter<CableAdapter.ViewHolder> 
         public void OnItemClick(ViewHolder holder, View view, int position);
     }
 
-    public CableAdapter(Context context) {
+    public MCableAdapter(Context context) {
         this.context = context;
     }
 
@@ -126,6 +126,10 @@ public class CableAdapter extends RecyclerView.Adapter<CableAdapter.ViewHolder> 
             }
 
 
+            if (item.getReport() == 1) {
+                phone.setImageResource(R.drawable.phone_yellow);
+                circle.setImageResource(R.drawable.circle_yellow);
+            }
             if (item.getBroken() == 1) {
                 phone.setImageResource(R.drawable.phone_red);
                 circle.setImageResource(R.drawable.circle_red);
