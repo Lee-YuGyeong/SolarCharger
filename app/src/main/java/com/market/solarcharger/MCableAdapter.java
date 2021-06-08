@@ -111,17 +111,17 @@ public class MCableAdapter extends RecyclerView.Adapter<MCableAdapter.ViewHolder
 //                charger.setVisibility(View.VISIBLE);
 //            }
 
-         //   if(item.getPort_num()==1){
+            //   if(item.getPort_num()==1){
             //number.setImageResource(item.getNumber());
             //   phone.setImageResource(R.drawable.phone_blue);
             circle.setImageResource(R.drawable.circle_gray);
             phone.setImageResource(R.drawable.phone_gray);
-            if(item.getPort_num()==1){
+            charger.setVisibility(View.INVISIBLE);
+            if (item.getPort_num() == 1) {
                 number.setText("1");
-            }else if(item.getPort_num()==2){
+            } else if (item.getPort_num() == 2) {
                 number.setText("2");
-            }
-            else{
+            } else {
                 number.setText("3");
             }
 
@@ -129,10 +129,12 @@ public class MCableAdapter extends RecyclerView.Adapter<MCableAdapter.ViewHolder
             if (item.getReport() == 1) {
                 phone.setImageResource(R.drawable.phone_yellow);
                 circle.setImageResource(R.drawable.circle_yellow);
+                charger.setVisibility(View.INVISIBLE);
             }
             if (item.getBroken() == 1) {
                 phone.setImageResource(R.drawable.phone_red);
                 circle.setImageResource(R.drawable.circle_red);
+                charger.setVisibility(View.INVISIBLE);
             }
             if (item.getStatusInfo() == 1) {
                 phone.setImageResource(R.drawable.phone_blue);

@@ -1,8 +1,10 @@
 package com.market.solarcharger.API;
 
 import com.market.solarcharger.GraphInfo;
+import com.market.solarcharger.ModeInfo;
 import com.market.solarcharger.PortResponseInfo;
 import com.market.solarcharger.ReportResponseInfo;
+import com.market.solarcharger.SolarGraphInfo;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -31,5 +33,12 @@ public interface Api {
     @POST("GraphApi.php?apicall=getinfo")
     Call<GraphInfo> GraphReport(@Part("Port_num") int Port_num);
 
+    @Multipart
+    @POST("SolarGraphApi.php?apicall=getinfo")
+    Call<SolarGraphInfo> SolarReport(@Part("Port_num") int Port_num);
+
+    @Multipart
+    @POST("ModeApi.php?apicall=getinfo")
+    Call<ModeInfo> getMode(@Part("Product_Product_ID") int Product_Product_ID);
 
 }

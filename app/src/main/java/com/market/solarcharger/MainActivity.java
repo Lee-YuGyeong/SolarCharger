@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,6 +46,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,6 +78,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         getPortInfo();
+        getGraphInfo();
+        getSolarGraphInfo();
+        getMode();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -88,6 +99,20 @@ public class MainActivity extends AppCompatActivity {
         image = intent.getIntExtra("image", 0);
         text_weather = findViewById(R.id.text_weather);
         text_weather.setText(msg);
+
+        final SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getPortInfo();
+                getGraphInfo();
+                getSolarGraphInfo();
+                getMode();
+                refreshLayout.setRefreshing(false);
+
+            }
+        });
 
         ImageButton button = findViewById(R.id.button1);
         button.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageResource(image);
 
         toolbarInit();
-
+        getMode();
 
         chartLayout = findViewById(R.id.chartLayout);
         powerLayout = findViewById(R.id.powerLayout);
@@ -112,33 +137,11 @@ public class MainActivity extends AppCompatActivity {
         chart = findViewById(R.id.linechart);
 
         getGraphInfo();
+        getSolarGraphInfo();
 
-
-        ArrayList<Entry> values = new ArrayList<>();
-
-        for (int i = 0; i < 10; i++) {
-
-            float val = (float) (Math.random() * 10);
-            values.add(new Entry(i, val));
-        }
 
         getPortInfo();
 
-        LineDataSet set1;
-        set1 = new LineDataSet(values, "DataSet 1");
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set1); // add the data sets
-
-        // create a data object with the data sets
-        LineData data = new LineData(dataSets);
-
-        // black lines and points
-        set1.setColor(Color.BLACK);
-        set1.setCircleColor(Color.BLACK);
-
-        // set data
-        chart.setData(data);
 
     }
 
@@ -197,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     GraphInfo graphInfo = response.body();
                     List<GraphDetailInfo> graphDetailInfoList = new ArrayList<GraphDetailInfo>(graphInfo.getGraphDetailInfoList());
-                    power.setText("   ▶ "+graphDetailInfoList.get(0).getPowerpower());
+                    power.setText("   ▶ " + graphDetailInfoList.get(0).getPowerpower()+" Wh");
 
 
                 } else { //response 실패
@@ -208,6 +211,93 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<GraphInfo> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    } // retrofit 데이터 받아오기
+
+
+    private void getMode() {
+
+
+        Api Api = APIClient.getClient().create(Api.class);
+        Call<ModeInfo> call = Api.getMode(1);
+        TextView textView_mode = findViewById(R.id.textView_mode);
+
+        call.enqueue(new Callback<ModeInfo>() {
+            @Override
+            public void onResponse(Call<ModeInfo> call, Response<ModeInfo> response) {
+                if (response.isSuccessful()) {
+                    ModeInfo modeInfo = response.body();
+                    List<ModeDetailInfo> modeDetailInfoList = new ArrayList<>(modeInfo.getModeDetailInfoList());
+
+                    int mode = modeDetailInfoList.get(0).getMode();
+                    if (mode == 0) {
+                        textView_mode.setText("현재 일반 전력 충전 모드입니다.");
+                    } else if (mode == 1) {
+                        textView_mode.setText("현재 태양광 충전 모드입니다.");
+                    } else if (mode == 2) {
+                        textView_mode.setText("현재 정전 상태입니다.");
+                    }
+                } else { //response 실패
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ModeInfo> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    } // retrofit 데이터 받아오기
+
+
+    private void getSolarGraphInfo() {
+
+
+        Api Api = APIClient.getClient().create(Api.class);
+        Call<SolarGraphInfo> call = Api.SolarReport(1);
+
+
+        call.enqueue(new Callback<SolarGraphInfo>() {
+            @Override
+            public void onResponse(Call<SolarGraphInfo> call, Response<SolarGraphInfo> response) {
+                if (response.isSuccessful()) {
+                    SolarGraphInfo solarGraphInfo = response.body();
+                    List<SolarGraphDetailInfo> solarGraphDetailInfoList = new ArrayList<>(solarGraphInfo.getSolarGraphDetailInfoList());
+
+                    ArrayList<Entry> values = new ArrayList<>();
+
+                    for (int i = 0; i < solarGraphDetailInfoList.size(); i++) {
+
+                        float val = (float) (solarGraphDetailInfoList.get(i).getSolar());
+                        values.add(new Entry(i, val));
+                    }
+                    LineDataSet set1;
+                    set1 = new LineDataSet(values, "DataSet 1");
+
+                    ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+                    dataSets.add(set1); // add the data sets
+
+                    // create a data object with the data sets
+                    LineData data = new LineData(dataSets);
+
+                    // black lines and points
+                    set1.setColor(Color.BLACK);
+                    set1.setCircleColor(Color.BLACK);
+
+                    // set data
+                    chart.setData(data);
+
+                } else { //response 실패
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<SolarGraphInfo> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

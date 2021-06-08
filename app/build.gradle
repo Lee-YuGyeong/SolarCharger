@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
 }
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
@@ -51,4 +52,10 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'//okhttp3
 
     implementation 'com.github.lakue119:LakuePopupActivity:1.0.1'
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }

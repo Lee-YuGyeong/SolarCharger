@@ -116,6 +116,8 @@ public class CableAdapter extends RecyclerView.Adapter<CableAdapter.ViewHolder> 
             //   phone.setImageResource(R.drawable.phone_blue);
             circle.setImageResource(R.drawable.circle_gray);
             phone.setImageResource(R.drawable.phone_gray);
+            charger.setVisibility(View.INVISIBLE);
+
             if(item.getPort_num()==1){
                 number.setText("1");
             }else if(item.getPort_num()==2){
@@ -129,6 +131,7 @@ public class CableAdapter extends RecyclerView.Adapter<CableAdapter.ViewHolder> 
             if (item.getBroken() == 1) {
                 phone.setImageResource(R.drawable.phone_red);
                 circle.setImageResource(R.drawable.circle_red);
+                charger.setVisibility(View.INVISIBLE);
             }
             if (item.getStatusInfo() == 1) {
                 phone.setImageResource(R.drawable.phone_blue);
