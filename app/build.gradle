@@ -1,7 +1,8 @@
 plugins {
     id 'com.android.application'
+    id 'kotlin-android'
 }
-apply plugin: 'kotlin-android'
+
 
 android {
     compileSdkVersion 30
@@ -27,8 +28,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
     repositories {
         maven{url "https://jitpack.io"}
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
@@ -53,8 +60,8 @@ dependencies {
 
     implementation 'com.github.lakue119:LakuePopupActivity:1.0.1'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-    implementation "androidx.core:core-ktx:+"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 repositories {
     mavenCentral()

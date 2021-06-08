@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -411,7 +412,8 @@ public class MainActivity extends AppCompatActivity {
             getPortInfo();
         } else {
             final EditText txtEdit = new EditText(MainActivity.this);
-            txtEdit.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+            txtEdit.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            txtEdit.setTransformationMethod(PasswordTransformationMethod.getInstance());
             AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity.this);
             dlg.setTitle("관리자 모드");
             dlg.setMessage("관리자 모드를 실행하려면 패스워드를 입력하세요.");
