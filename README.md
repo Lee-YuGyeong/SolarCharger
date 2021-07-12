@@ -27,15 +27,16 @@
 - targetSdkVersion : 30
 
 ## Screenshot
-<p align="center"><img src="image_src">
+<p align="center">
 <img src="https://user-images.githubusercontent.com/60072190/125301242-c3233a80-e365-11eb-9262-a2db7287bf08.jpg"  width="300" height="600">
 <img src="https://user-images.githubusercontent.com/60072190/125301809-4e9ccb80-e366-11eb-8de8-c3086860ee5f.jpg"  width="300" height="600">
+</p>
+<p align="center">
 <img src="https://user-images.githubusercontent.com/60072190/125302947-60cb3980-e367-11eb-851a-f83030f8b9df.jpg"  width="300" height="600">
-  </p>
-  
-  <p align="center"><img src="image_src">
 <img src="https://user-images.githubusercontent.com/60072190/125301900-66744f80-e366-11eb-8f17-b9ee5be8af40.jpg"  width="300" height="600">
+<p align="center">
+</p>
 <img src="https://user-images.githubusercontent.com/60072190/125303774-02528b00-e368-11eb-8eef-2ebca8c70edc.PNG"  width="300" height="600">
 <img src="https://user-images.githubusercontent.com/60072190/125303916-20b88680-e368-11eb-95bc-df8734d74490.jpg"  width="300" height="600">
-  </p>
+</p>
 
